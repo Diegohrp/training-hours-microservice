@@ -7,6 +7,4 @@ import java.util.Optional;
 
 public interface TrainerRepository extends JpaRepository<Trainer, Long> {
     Optional<Trainer> findByUsername(String username);
-
-    Boolean existsByUsername(String username);
 }

@@ -29,7 +29,7 @@ public class Trainer {
     @Column(nullable = false, name = "is_active")
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "trainer")
+    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
     private List<WorkingHours> workingHours;
 
     public Trainer(String username, String firstName, String lastName, Boolean isActive) {

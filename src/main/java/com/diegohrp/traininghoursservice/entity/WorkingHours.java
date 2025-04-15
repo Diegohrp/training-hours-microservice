@@ -1,5 +1,6 @@
 package com.diegohrp.traininghoursservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,8 +25,9 @@ public class WorkingHours {
     @Column
     private Integer duration;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainer_id")
+    @JsonIgnore
     private Trainer trainer;
 
     public WorkingHours(Integer month, Integer year, Integer duration, Trainer trainer) {

@@ -2,14 +2,12 @@ package com.diegohrp.traininghoursservice.service;
 
 import com.diegohrp.traininghoursservice.dto.TrainerWorkloadDto;
 import com.diegohrp.traininghoursservice.entity.Trainer;
-import com.diegohrp.traininghoursservice.entity.WorkingHours;
 import com.diegohrp.traininghoursservice.repository.TrainerRepository;
-import com.diegohrp.traininghoursservice.repository.WorkingHoursRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -55,5 +53,13 @@ public class TrainerService {
                 trainerDto.duration(),
                 trainerDto.actionType()
         );
+    }
+
+    public Trainer getByUsername(String username) {
+        Optional<Trainer> opt = trainerRepository.findByUsername(username);
+        if (opt.isEmpty()) {
+            throw new NoSuchElementException("Trainer with username " + username + " does not exist");
+        }
+        return opt.get();
     }
 }
