@@ -7,27 +7,35 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Entity
 @NoArgsConstructor
 @Getter
 @Setter
+@Entity
+@Table(name = "trainers")
 public class Trainer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(name = "first_name")
+    @Column(nullable = false, name = "first_name")
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(nullable = false, name = "last_name")
     private String lastName;
 
-    @Column(name = "is_active")
+    @Column(nullable = false, name = "is_active")
     private Boolean isActive;
 
     @OneToMany(mappedBy = "trainer")
     private List<WorkingHours> workingHours;
+
+    public Trainer(String username, String firstName, String lastName, Boolean isActive) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.isActive = isActive;
+    }
 }

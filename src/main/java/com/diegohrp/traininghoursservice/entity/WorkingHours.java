@@ -28,4 +28,11 @@ public class WorkingHours {
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
 
+    public WorkingHours(Integer month, Integer year, Integer duration, Trainer trainer) {
+        this.month = month;
+        this.year = year;
+        this.duration = duration;
+        this.trainer = trainer;
+    }
+
 }
