@@ -20,19 +20,19 @@ public class WorkingHoursService {
     }
 
     private void update(WorkingHours workingHours, Integer duration, ActionTypes action) {
-        int current = workingHours.getDuration();
-        int newDuration = current + (action == ActionTypes.ADD ? duration : -duration);
-        workingHours.setDuration(newDuration);
+        workingHours.setDuration(duration);
         workingHoursRepository.save(workingHours);
     }
 
-    public void placeWorkingHours(Trainer trainer, Integer month, Integer year, Integer duration, ActionTypes action) {
+    public void placeWorkingHours(Trainer trainer, Integer month, Integer year, Integer duration, Integer currentWorkload, ActionTypes action) {
         Optional<WorkingHours> opt = workingHoursRepository
                 .getByTrainerIdAndMonthAndYear(trainer.getId(), month, year);
+        int newDuration = currentWorkload + (action == ActionTypes.ADD ? duration : -duration);
+
         if (opt.isPresent()) {
-            this.update(opt.get(), duration, action);
+            this.update(opt.get(), newDuration, action);
         } else {
-            this.add(trainer, month, year, duration);
+            this.add(trainer, month, year, newDuration);
         }
     }
 }

@@ -51,6 +51,7 @@ public class TrainerService {
                 month,
                 year,
                 trainerDto.duration(),
+                trainerDto.currentWorkload(),
                 trainerDto.actionType()
         );
     }
