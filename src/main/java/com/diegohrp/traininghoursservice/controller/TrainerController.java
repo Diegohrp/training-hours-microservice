@@ -10,6 +10,7 @@ import com.diegohrp.traininghoursservice.service.TrainerService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,14 +26,14 @@ public class TrainerController {
     private TrainerMapper mapper;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
-    public void addWorkload(@RequestBody @Valid TrainerWorkloadDto trainerDto) {
+    public ResponseEntity<Void> addWorkload(@RequestBody @Valid TrainerWorkloadDto trainerDto) {
         trainerService.placeWorkload(trainerDto);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public MonthlySummaryDto getWorkingHours(@PathVariable String username) {
+    public ResponseEntity<MonthlySummaryDto> getWorkingHours(@PathVariable String username) {
         Trainer trainer = trainerService.getByUsername(username);
         List<WorkingHours> workingHours = trainer.getWorkingHours();
         Map<Integer, Map<Integer, MonthDto>> years = workingHours.stream()
@@ -41,13 +42,14 @@ public class TrainerController {
                                 item -> new MonthDto(item.getMonth(), item.getDuration())
                         ))
                 );
-        return mapper.toMonthlySummaryDto(trainer, years);
+        return new ResponseEntity<>(mapper.toMonthlySummaryDto(trainer, years), HttpStatus.OK);
     }
 
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoSuchElementException.class)
-    public String return400(NoSuchElementException ex) {
-        return ex.getMessage();
+    public ResponseEntity<Map<String, String>> return404(NoSuchElementException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message", ex.getMessage()));
     }
+
 }
