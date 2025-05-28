@@ -5,6 +5,9 @@ import com.diegohrp.traininghoursservice.dto.TrainerWorkloadDto;
 import com.diegohrp.traininghoursservice.entity.mongoDB.TrainerSummary;
 import com.diegohrp.traininghoursservice.mapper.TrainerMapper;
 import com.diegohrp.traininghoursservice.service.TrainerService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,16 +21,21 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/trainers/training-hours")
 @AllArgsConstructor
+@Tag(name = "Trainers", description = "Operations related to traines summary")
 public class TrainerController {
     private TrainerService trainerService;
     private TrainerMapper mapper;
 
+    @Operation(summary = "Add training hours for a given trainer")
+    @ApiResponse(responseCode = "200", description = "Workload added successfully")
     @PostMapping
     public ResponseEntity<Void> addWorkload(@RequestBody @Valid TrainerWorkloadDto trainerDto) {
         trainerService.placeWorkload(trainerDto);
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "Get trainer summary (trainer data and workload) by username")
+    @ApiResponse(responseCode = "200", description = "Trainer found")
     @GetMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<TrainerSummary> getWorkingHours(@PathVariable String username) {
