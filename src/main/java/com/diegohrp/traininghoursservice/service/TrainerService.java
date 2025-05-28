@@ -1,33 +1,36 @@
 package com.diegohrp.traininghoursservice.service;
 
 import com.diegohrp.traininghoursservice.dto.TrainerWorkloadDto;
-import com.diegohrp.traininghoursservice.entity.Trainer;
-import com.diegohrp.traininghoursservice.repository.TrainerRepository;
+import com.diegohrp.traininghoursservice.entity.mongoDB.TrainerSummary;
+import com.diegohrp.traininghoursservice.repository.TrainerSummaryRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class TrainerService {
-    private TrainerRepository trainerRepository;
+    private TrainerSummaryRepository trainerRepository;
     private WorkingHoursService workingHoursService;
 
-    private Trainer add(TrainerWorkloadDto trainerDto) {
-        Trainer trainer = new Trainer(
-                trainerDto.username(),
-                trainerDto.firstName(),
-                trainerDto.lastName(),
-                trainerDto.isActive()
-        );
+    private TrainerSummary add(TrainerWorkloadDto trainerDto) {
+        TrainerSummary trainer = TrainerSummary.builder()
+                .username(trainerDto.username())
+                .firstName(trainerDto.firstName())
+                .lastName(trainerDto.lastName())
+                .isActive(trainerDto.isActive())
+                .years(new HashMap<>())
+                .build();
+
         trainerRepository.save(trainer);
         return trainer;
     }
 
-    private void update(Trainer trainer, TrainerWorkloadDto trainerDto) {
+    private void update(TrainerSummary trainer, TrainerWorkloadDto trainerDto) {
         trainer.setFirstName(trainerDto.firstName());
         trainer.setLastName(trainerDto.lastName());
         trainer.setIsActive(trainerDto.isActive());
@@ -36,8 +39,8 @@ public class TrainerService {
 
     @Transactional
     public void placeWorkload(TrainerWorkloadDto trainerDto) {
-        Optional<Trainer> opt = trainerRepository.findByUsername(trainerDto.username());
-        Trainer trainer;
+        Optional<TrainerSummary> opt = trainerRepository.findByUsername(trainerDto.username());
+        TrainerSummary trainer;
         if (opt.isPresent()) {
             trainer = opt.get();
             this.update(trainer, trainerDto);
@@ -56,8 +59,8 @@ public class TrainerService {
         );
     }
 
-    public Trainer getByUsername(String username) {
-        Optional<Trainer> opt = trainerRepository.findByUsername(username);
+    public TrainerSummary getByUsername(String username) {
+        Optional<TrainerSummary> opt = trainerRepository.findByUsername(username);
         if (opt.isEmpty()) {
             throw new NoSuchElementException("Trainer with username " + username + " does not exist");
         }
