@@ -1,0 +1,12 @@
+package com.diegohrp.traininghoursservice.integration;
+
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
+import org.junit.runner.RunWith;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(
+        features = "src/test/resources/features/integration",
+        glue = "com.diegohrp.traininghoursservice.integration.steps")
+public class MicroserviceTestRunner {
+}
