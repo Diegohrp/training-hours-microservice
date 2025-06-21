@@ -5,9 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Queue;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
+import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
@@ -25,6 +28,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JmsConfig {
     private final ConnectionFactory connectionFactory;
+    @Value("${queue.name}")
+    private String queueName;
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -60,5 +65,11 @@ public class JmsConfig {
     public Validator validator() {
         return Validation.buildDefaultValidatorFactory().getValidator();
     }
+
+    @Bean
+    public Queue trainerWorkloadQueue() {
+        return new ActiveMQQueue(queueName);
+    }
+
 }
 
